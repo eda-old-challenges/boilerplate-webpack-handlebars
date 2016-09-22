@@ -6,10 +6,12 @@ module.exports = {
   },
   module: {
     loaders: [
+      { loader: 'babel-loader', test: /\.js$/, exclude: 'node_modules' }, 
       { test: /\.hbs$/, loader: 'handlebars-loader' }
     ]
   },
   node: {
     fs: 'empty'
-  }
+  },
+  devtool: 'source-map'
 }
