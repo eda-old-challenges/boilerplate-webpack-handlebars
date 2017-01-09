@@ -1,9 +1,7 @@
 var state = require('./state')
 var wombleList = require('./templates/womble-list.hbs')
 
-document.addEventListener('DOMContentLoaded', function () {
-  render()
-})
+document.addEventListener('DOMContentLoaded', render)
 
 function render () {
   var wombles = state.getState()
