@@ -1,58 +1,35 @@
+var state = require('./state')
 var wombleList = require('./templates/womble-list.hbs')
-var detailsTemplate = require('./templates/details.hbs')
 
 document.addEventListener('DOMContentLoaded', function () {
-  var wombles = [
-    { name: 'Orinocco', email: 'orinocco@wimbledoncommon.net', details: 'Tin cans' },
-    { name: 'Tomsk', email: 'tomsk@wimbledoncommon.net', details: 'Plastic bags' },
-    { name: 'Bungo', email: 'bungo@wimbledoncommon.net', details: 'Discarded wombat poop' }
-  ]
-  refreshContent(wombles)
+  render()
 })
 
-function refreshContent (wombles) {
-  var div = document.createElement('div')
-  div.innerHTML = wombleList({ wombles: wombles })
-  document.body.appendChild(div)
-  bindEventListeners(wombles)
+function render () {
+  var wombles = state.getState()
+  var app = document.getElementById('app')
+  app.innerHTML = wombleList({ wombles: wombles })
+  bindEventListeners(app)
 }
 
-function bindEventListeners (wombles) {
-  var lis = document.getElementsByTagName('li')
+function bindEventListeners (elem, wombles) {
+  var lis = elem.getElementsByTagName('li')
   for (var i = 0; i < lis.length; i++) {
     lis[i].addEventListener('click', function (e) {
-      wombleToggle(e.target, wombles)
+      toggleWomble(e.target.parentNode)
     })
   }
 }
 
-function wombleToggle (target, wombles) {
-  console.log(target.lastChild.tagName)
-  if (target.lastChild.tagName === 'UL') {
-    target.removeChild(target.lastChild)
-    return
-  }
-  appendDetails(target, wombles)
-}
-
-function appendDetails (target, wombles) {
-  var match = null
-  for (var i = 0; i < wombles.length; i++) {
-    if (wombleMatch(target.innerHTML, wombles[i])) {
-      match = wombles[i]
+function toggleWomble (elem) {
+  var name = elem.getAttribute('data-name')
+  var showingDetails = elem.getAttribute('data-details') === 'true'
+  var updated = state.getState().map(function (womble) {
+    if (womble.name === name) {
+      womble.showingDetails = !showingDetails
     }
-  }
-  expandWomble(match, target)
-}
-
-function wombleMatch (innerHTML, wombat) {
-  return innerHTML.includes(wombat.email)
-}
-
-function expandWomble (match, target) {
-  if (match) {
-    var ul = document.createElement('ul')
-    ul.innerHTML = detailsTemplate(match)
-    target.appendChild(ul)
-  }
+    return womble
+  })
+  state.setState(updated)
+  render()
 }
