@@ -12,7 +12,7 @@ function render () {
   bindEventListeners(app)
 }
 
-function bindEventListeners (elem, wombles) {
+function bindEventListeners (elem) {
   var lis = elem.getElementsByTagName('li')
   for (var i = 0; i < lis.length; i++) {
     lis[i].addEventListener('click', function (e) {
